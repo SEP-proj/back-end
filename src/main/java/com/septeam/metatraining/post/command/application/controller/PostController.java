@@ -4,6 +4,8 @@ import com.septeam.metatraining.common.annotation.CustomCommonApiResponse;
 import com.septeam.metatraining.common.response.ApiResponse;
 import com.septeam.metatraining.post.command.application.dto.PostDTO;
 import com.septeam.metatraining.post.command.application.dto.TitleDTO;
+import com.septeam.metatraining.post.command.application.dto.ai.subject.GetSubjectDTO;
+import com.septeam.metatraining.post.command.application.service.AIApisService;
 import com.septeam.metatraining.post.command.application.service.CreatedPostService;
 import com.septeam.metatraining.post.command.application.service.UpdatePostService;
 import com.septeam.metatraining.post.command.domain.aggregate.entity.Post;
@@ -21,11 +23,12 @@ public class PostController {
     private final CreatedPostService createdPostService;
     private final UpdatePostService updatePostService;
 
-
+    private final AIApisService aiApisService;
     @Autowired
-    public PostController(CreatedPostService createdPostService, UpdatePostService updatePostService) {
+    public PostController(CreatedPostService createdPostService, UpdatePostService updatePostService, AIApisService aiApisService) {
         this.createdPostService = createdPostService;
         this.updatePostService = updatePostService;
+        this.aiApisService = aiApisService;
     }
 
     @Operation(summary = "글쓰기 주제", description = "사용자가 글쓰기 주제를 정하면 글쓰기 주제와 카테고리 사용자 ID를 database에 저장.")
@@ -87,6 +90,15 @@ public class PostController {
         System.out.println("PostDTO = " + postDTO);
         String content = updatePostService.resultContent(postDTO);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(),"saved successfully",content);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/recommand")
+    public ResponseEntity<?> getSubject(){
+       GetSubjectDTO getSubjectDTO = aiApisService.getSubjects().getBody();
+//        Object object = aiApisService.getSubjects().getBody();
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(),"saved successfully",getSubjectDTO);
+
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
