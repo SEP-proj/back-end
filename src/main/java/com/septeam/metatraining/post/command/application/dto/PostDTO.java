@@ -2,9 +2,13 @@ package com.septeam.metatraining.post.command.application.dto;
 
 import com.septeam.metatraining.post.command.domain.aggregate.entity.enumType.CategoryEnum;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
-public class postDTO {
+@NoArgsConstructor
+@ToString
+public class PostDTO {
 
     private Long id;
     private String title;
@@ -16,15 +20,8 @@ public class postDTO {
     private String content;
     private boolean published;
 
-
-    // create
-    public postDTO(CategoryEnum category, Long memberId) {
-        this.category = category;
-        this.memberId = memberId;
-    }
-
-    // create
-    public postDTO(String title, CategoryEnum category, Long memberId, String introduction, String body, String conclusion, String content, boolean published) {
+    public PostDTO(Long id, String title, CategoryEnum category, Long memberId, String introduction, String body, String conclusion, String content, boolean published) {
+        this.id = id;
         this.title = title;
         this.category = category;
         this.memberId = memberId;
@@ -35,14 +32,32 @@ public class postDTO {
         this.published = published;
     }
 
-    public postDTO(Long id, String introduction, String body, String conclusion) {
+    // create
+    public PostDTO(CategoryEnum category, Long memberId) {
+        this.category = category;
+        this.memberId = memberId;
+    }
+
+    // create
+    public PostDTO(String title, CategoryEnum category, Long memberId, String introduction, String body, String conclusion, String content, boolean published) {
+        this.title = title;
+        this.category = category;
+        this.memberId = memberId;
+        this.introduction = introduction;
+        this.body = body;
+        this.conclusion = conclusion;
+        this.content = content;
+        this.published = published;
+    }
+
+    public PostDTO(Long id, String introduction, String body, String conclusion) {
         this.id = id;
         this.introduction = introduction;
         this.body = body;
         this.conclusion = conclusion;
     }
 
-    public postDTO(Long id, String title, String content, boolean published){
+    public PostDTO(Long id, String title, String content, boolean published){
         this.id=id;
         this.title=title;
         this.content=content;

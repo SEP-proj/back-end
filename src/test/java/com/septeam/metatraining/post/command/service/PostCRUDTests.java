@@ -1,6 +1,6 @@
 package com.septeam.metatraining.post.command.service;
 
-import com.septeam.metatraining.post.command.application.dto.postDTO;
+import com.septeam.metatraining.post.command.application.dto.PostDTO;
 import com.septeam.metatraining.post.command.application.service.CreatedPostService;
 import com.septeam.metatraining.post.command.application.service.DeletePostService;
 import com.septeam.metatraining.post.command.application.service.UpdatePostService;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @SpringBootTest
@@ -38,7 +37,7 @@ public class PostCRUDTests {
     private static Stream<Arguments> categoryInfo() {
         return Stream.of(
                 Arguments.of(
-                        new postDTO(
+                        new PostDTO(
                                 CategoryEnum.CULTURE,
                                 1L
                         )
@@ -49,7 +48,7 @@ public class PostCRUDTests {
     private static Stream<Arguments> postInfo() {
         return Stream.of(
                 Arguments.of(
-                        new postDTO(
+                        new PostDTO(
                                 "test_title",
                                 CategoryEnum.CULTURE,
                                 1L,
@@ -66,7 +65,7 @@ public class PostCRUDTests {
     @DisplayName("초기화면에서 카테고리만 정해졌을 때 DB col에 추가되는지 테스트")
     @ParameterizedTest
     @MethodSource("categoryInfo")
-    void categoryCreateTest(postDTO postDTO) {
+    void categoryCreateTest(PostDTO postDTO) {
         //when
         System.out.println("test");
         Long result = createdPostService.createPostCategory(postDTO);
@@ -78,7 +77,7 @@ public class PostCRUDTests {
     @DisplayName("글 생성 테스트 및 삭제 테스트")
     @ParameterizedTest
     @MethodSource("postInfo")
-    void create_deletePostTest(postDTO postDTO) {
+    void create_deletePostTest(PostDTO postDTO) {
         // 글생성
         // when
         Post result = createdPostService.createPost(postDTO);
@@ -97,7 +96,7 @@ public class PostCRUDTests {
     @DisplayName("임시저장(update) 테스트")
     @ParameterizedTest
     @MethodSource("postInfo")
-    void introductionUpdateTest(postDTO postDTO) {
+    void introductionUpdateTest(PostDTO postDTO) {
         //update전 글 생성
         // introduction
         //given
@@ -133,11 +132,11 @@ public class PostCRUDTests {
     @DisplayName("content update 테스트")
     @ParameterizedTest
     @MethodSource("postInfo")
-    void contentUpdateTest(postDTO postDTO) {
+    void contentUpdateTest(PostDTO postDTO) {
 
         //given
         Post createPost = createdPostService.createPost(postDTO);
-        postDTO updateComponent = new postDTO(
+        PostDTO updateComponent = new PostDTO(
                 createPost.getId(),
                 "modify_introduction",
                 "modify_body",
@@ -152,14 +151,14 @@ public class PostCRUDTests {
     @DisplayName("post 최종 update 테스트")
     @ParameterizedTest
     @MethodSource("postInfo")
-    void postUpdateTest(postDTO postDTO) {
+    void postUpdateTest(PostDTO postDTO) {
 
         //given
         Post createPost = createdPostService.createPost(postDTO);
         String beforeTitle = createPost.getTitle();
         String beforeContent = createPost.getContent();
         boolean beforePublished = createPost.isPublished();
-        postDTO updatePost = new postDTO(
+        PostDTO updatePost = new PostDTO(
                 createPost.getId(),
                 "modify_title",
                 "modify_content",

@@ -1,6 +1,7 @@
 package com.septeam.metatraining.post.command.application.service;
 
-import com.septeam.metatraining.post.command.application.dto.postDTO;
+import com.septeam.metatraining.post.command.application.dto.PostDTO;
+import com.septeam.metatraining.post.command.application.dto.TitleDTO;
 import com.septeam.metatraining.post.command.domain.aggregate.entity.Post;
 import com.septeam.metatraining.post.command.domain.aggregate.vo.MemberVO;
 import com.septeam.metatraining.post.command.domain.repository.PostRepository;
@@ -18,7 +19,7 @@ public class CreatedPostService {
     }
 
 
-    public Long createPostCategory(postDTO postDTO) {
+    public Long createPostCategory(PostDTO postDTO) {
         MemberVO memberId = MemberVO.builder().memeberId(postDTO.getMemberId()).build();
         Post newPost = new Post(
                 postDTO.getCategory(),
@@ -28,7 +29,7 @@ public class CreatedPostService {
         return resultPost.getId();
     }
 
-    public Post createPost(postDTO postDTO) {
+    public Post createPost(PostDTO postDTO) {
         MemberVO memberId = MemberVO.builder().memeberId(postDTO.getMemberId()).build();
         Post newPost = new Post(
                 postDTO.getTitle(),
@@ -39,6 +40,16 @@ public class CreatedPostService {
                 postDTO.getConclusion(),
                 postDTO.getContent(),
                 postDTO.isPublished()
+        );
+        return postRepository.save(newPost);
+    }
+
+    public Post createPost(TitleDTO postDTO) {
+        MemberVO memberId = MemberVO.builder().memeberId(postDTO.getMemberId()).build();
+        Post newPost = new Post(
+                postDTO.getTitle(),
+                postDTO.getCategory(),
+                memberId
         );
         return postRepository.save(newPost);
     }

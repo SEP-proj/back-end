@@ -45,6 +45,14 @@ public class Post {
     @Column
     private boolean published; // 글 공개 여부
 
+    public Post(String title, CategoryEnum category, MemberVO memberId) {
+        this.title = title;
+        this.category = category;
+        this.memberId = memberId;
+        this.createdDate = LocalDateTime.now();
+
+    }
+
     public Post(CategoryEnum category, MemberVO memberId) {
         this.category = category;
         this.memberId = memberId;
@@ -87,6 +95,10 @@ public class Post {
         this.published = published;
     }
 
+    public Post() {
+
+    }
+
     public Long getId() {
         return id;
     }
@@ -118,5 +130,9 @@ public class Post {
                 ", createdDate=" + createdDate +
                 ", published=" + published +
                 '}';
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
