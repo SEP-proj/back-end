@@ -1,6 +1,6 @@
 package com.septeam.metatraining.post.command.application.service;
 
-import com.septeam.metatraining.post.command.application.dto.postDTO;
+import com.septeam.metatraining.post.command.application.dto.PostDTO;
 import com.septeam.metatraining.post.command.domain.aggregate.entity.Post;
 import com.septeam.metatraining.post.command.domain.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,30 +39,23 @@ public class UpdatePostService {
     }
 
     // 마지막 페이지로 넘어갈 때
-    public String resultContent(postDTO postDTO){
+    @Transactional
+    public String resultContent(PostDTO postDTO){
         Optional<Post> post = postRepository.findById(postDTO.getId());
 
         String content=postDTO.getIntroduction()+"\n"+
                 postDTO.getBody()+"\n"+
                 postDTO.getConclusion();
 
-        Post updatePost= new Post(
-                postDTO.getId(),
-                post.get().getTitle(),
-                post.get().getCategory(),
-                post.get().getMemberId(),
-                postDTO.getIntroduction(),
-                postDTO.getBody(),
-                postDTO.getConclusion(),
-                content
-        );
-
-        postRepository.save(updatePost);
+        if(post.isPresent()){
+            Post resultPost = post.get();
+            resultPost.setContent(content);
+        }
         return content;
     }
 
     // 마지막 페이지에서 요청처리
-    public void resultPost(postDTO postDTO){
+    public void resultPost(PostDTO postDTO){
         Optional<Post> post = postRepository.findById(postDTO.getId());
 
         Post resultPost= new Post(
