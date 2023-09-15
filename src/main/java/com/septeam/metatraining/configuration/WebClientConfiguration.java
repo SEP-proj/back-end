@@ -27,13 +27,8 @@ public class WebClientConfiguration {
                                 .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
 
         return   WebClient.builder()
-                .baseUrl("192.168.0.51:8000")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .build()
-                .mutate()
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .baseUrl("http://192.168.0.51:8000")
                 .build();
-
     }
 
 }
