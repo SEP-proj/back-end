@@ -22,16 +22,11 @@ public class AIApisService {
     }
 
     public ResponseEntity<Object> getSubjects(/*CategoryEnum categoryEnum*/) throws JsonProcessingException {
-        System.out.println("서비스 통과!");
-        CategoryDTO bodyData = new CategoryDTO("category", "환경");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String bodyJson = objectMapper.writeValueAsString(bodyData);
-
-        Map<String, Object> bodyMap = new HashMap<>();
-//        Map<String, String> objectMap = new HashMap<>();
-//        bodyMap.put("category", objectMap.put("1","환경"));
+//        CategoryDTO bodyData = new CategoryDTO("category", "환경");
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String bodyJson = objectMapper.writeValueAsString(bodyData);
+        Map<String, String> bodyMap = new HashMap<>();
         bodyMap.put("category","환경");
-        System.out.println("bodyJson = " + bodyJson);
         return webClient
                 .post()
                 .uri("/topic_recommand/make_subject")
