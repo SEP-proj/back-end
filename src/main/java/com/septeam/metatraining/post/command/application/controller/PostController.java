@@ -14,9 +14,12 @@ import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/post")
@@ -96,13 +99,22 @@ public class PostController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    //    @Operation(summary = "주제 추천",description = "사용자의 요청에 AI가 글쓰기 주제 추천")
+//    @CustomCommonApiResponse
+//    @PostMapping("/recommand")
+//    public ResponseEntity<?> getSubject() throws JsonProcessingException {
+//        Object result = aiApisService.getSubjects();
+//        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
+//
+//        return new ResponseEntity<>(response, HttpStatus.CREATED);
+//    }
     @PostMapping("/recommand")
-    public ResponseEntity<?> getSubject() throws JsonProcessingException {
-        Object result = aiApisService.getSubjects();
-        System.out.println("result = " + result.toString());
-        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
+    public ResponseEntity<?> getSubject(@RequestBody Map<String, Object> category) throws JsonProcessingException {
+        System.out.println(category);
+//        Object result = aiApisService.getSubjects();
+//        System.out.println("result = " + result.toString());
+//        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>("화이팅구리구리", HttpStatus.CREATED);
     }
-
 }
