@@ -14,9 +14,13 @@ import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/post")
@@ -92,16 +96,64 @@ public class PostController {
             @Parameter(description = "PostDTO의 서론 본론 결론을 받아서 사용", required = true, example = "") @RequestBody PostDTO postDTO) {
         System.out.println("PostDTO = " + postDTO);
         String content = updatePostService.resultContent(postDTO);
-        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", content);
+        // 임시
+        Map<String, String> result = new HashMap<>();
+        result.put("title", "학교폭력 문제 이대로 괜찮은가?");
+        result.put("content", content);
+        // 임시
+
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/recommand")
-    public ResponseEntity<?> getSubject() throws JsonProcessingException {
-        Object result = aiApisService.getSubjects();
-        System.out.println("result = " + result.toString());
+    // 임시
+    @GetMapping("/recommend/title")
+    public ResponseEntity<?> getTitle() {
+        Map<String, String> result = new HashMap<>();
+        result.put("title", "학교폭력은 더이상 방관하면 안된다.");
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+    // 임시
 
+    @Operation(summary = "주제 추천", description = "사용자의 요청에 AI가 글쓰기 주제 추천")
+    @CustomCommonApiResponse
+    @PostMapping("/recommend/subject")
+    public ResponseEntity<?> recommendSubject(@RequestBody Map<String, String> category) throws JsonProcessingException {
+        Object result = aiApisService.getSubjects(category);
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "카테고리추천", description = "사용자의 요청에 AI가 글 카테고리 추천")
+    @CustomCommonApiResponse
+    @PostMapping("/recommend/category")
+    public ResponseEntity<?> recommendCategory(@RequestBody Map<String, String> subject) throws JsonProcessingException {
+        System.out.println("subject = " + subject);
+        Object result = aiApisService.getCategory(subject);
+        System.out.println("result = " + result);
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "chatbot에게 도움요청", description = "사용자의 요청에 AI chatbot이 응답")
+    @CustomCommonApiResponse
+    @PostMapping("/chat/help")
+    public ResponseEntity<?> chatToChatBot(@RequestBody Map<String, String> userInfo) throws JsonProcessingException {
+        Object result = aiApisService.getChatAnswer(userInfo);
+
+        System.out.println("result = " + result);
+
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "chatbot에게 질문", description = "사용자의 질문에 AI chatbot이 질문에 대한 응답")
+    @CustomCommonApiResponse
+    @PostMapping("/chat/question")
+    public ResponseEntity<?> questionToChatBot(@RequestBody Map<String, String> question) throws JsonProcessingException {
+        Object result = aiApisService.getQuestionAnswer(question);
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
