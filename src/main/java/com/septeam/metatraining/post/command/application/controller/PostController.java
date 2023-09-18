@@ -124,7 +124,6 @@ public class PostController {
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
     @Operation(summary = "카테고리추천", description = "사용자의 요청에 AI가 글 카테고리 추천")
     @CustomCommonApiResponse
     @PostMapping("/recommend/category")
@@ -158,3 +157,4 @@ public class PostController {
     }
 
 }
+
