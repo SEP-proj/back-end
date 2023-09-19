@@ -24,7 +24,7 @@ public class UpdateMemberService {
     }
 
     @Transactional
-    public boolean UpdateMember(Long memberId,UpdateMemberDTO updateMemberDTO){
+    public boolean updateMember(Long memberId,UpdateMemberDTO updateMemberDTO){
         Optional<Member> member = memberRepository.findById(memberId);
         if(member.isPresent()){
             Member updateMember = member.get();
