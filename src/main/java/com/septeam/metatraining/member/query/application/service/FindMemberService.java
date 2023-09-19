@@ -1,4 +1,4 @@
-package com.septeam.metatraining.member.query.application;
+package com.septeam.metatraining.member.query.application.service;
 
 import com.septeam.metatraining.member.query.application.dto.FindMemberDTO;
 import com.septeam.metatraining.member.query.domain.repository.MemberMapper;
@@ -18,4 +18,6 @@ public class FindMemberService {
     public FindMemberDTO findMemberById(Long memberId){
         return memberMapper.findById(memberId);
     }
+    public FindMemberDTO findMemberBySub(String sub){return memberMapper.findBySub(sub);}
+    public FindMemberDTO findMemberByEmail(String email){return memberMapper.findByEmail(email);}
 }
