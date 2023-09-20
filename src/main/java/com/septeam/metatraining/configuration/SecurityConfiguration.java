@@ -6,6 +6,7 @@ import com.septeam.metatraining.common.filter.TokenAuthenticationFilter;
 import com.septeam.metatraining.common.handler.CustomAccessDeniedHandler;
 import com.septeam.metatraining.common.handler.OAuth2FailHandler;
 import com.septeam.metatraining.common.handler.OAuth2SuccessHandler;
+import com.septeam.metatraining.member.command.domain.aggregate.entity.enumtype.Role;
 import com.septeam.metatraining.security.command.application.service.CustomOAuth2UserService;
 import com.septeam.metatraining.security.command.application.service.CustomUserDetailService;
 import com.septeam.metatraining.security.command.domain.repository.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -26,7 +27,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Arrays;
-
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -50,8 +50,6 @@ public class SecurityConfiguration {
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
 
-
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -71,15 +69,13 @@ public class SecurityConfiguration {
         return source;
     }
 
-    public HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository(){
+    public HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository() {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
     AuthenticationExceptionFilter authenticationExceptionFilter(HandlerExceptionResolver resolver) {
         return new AuthenticationExceptionFilter(resolver);
     }
-
-
 
     TokenAuthenticationFilter tokenAuthenticationFilter(CustomTokenService customTokenService,
                                                         CustomUserDetailService customUserDetailService) {
@@ -106,16 +102,12 @@ public class SecurityConfiguration {
 
 
                 .authorizeRequests()
-                .antMatchers("/post", "/").permitAll() //permit request
 
                 .antMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**",
-                        "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll() //permit swagger
+                        "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()//permit swagger
+                .antMatchers("/post", "/", "/auth", "/login/**", "/auth/**").hasRole(Role.MEMBER.name()) //permit request
 
-                .antMatchers("/login/**","/auth/**").permitAll() //permit login
-                .anyRequest()
-                .authenticated()
                 .and()
-
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorize")
@@ -138,7 +130,6 @@ public class SecurityConfiguration {
                 .addFilterBefore(tokenAuthenticationFilter(customTokenService, customUserDetailService), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(authenticationExceptionFilter(resolver), TokenAuthenticationFilter.class)
                 .addFilterBefore(nullPointExceptionFilter, AuthenticationExceptionFilter.class);
-
 
         return http.build();
     }
