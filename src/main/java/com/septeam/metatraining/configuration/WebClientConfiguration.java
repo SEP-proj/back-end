@@ -30,5 +30,4 @@ public class WebClientConfiguration {
                 .baseUrl("http://192.168.0.51:8000")
                 .build();
     }
-
 }
