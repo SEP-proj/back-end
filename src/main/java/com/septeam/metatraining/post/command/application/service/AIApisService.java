@@ -48,14 +48,9 @@ public class AIApisService {
     public ResponseEntity<Object> getChatAnswer(Map<String, String> userInfo) {
         Map<String, String> bodyMap = new HashMap<>();
         System.out.println("userInfo = " + userInfo);
-        System.out.println("size는 : "+userInfo.size());
-        if (userInfo.size() >= 2) {
-            String content = userInfo.get("introduction") + "^" + userInfo.get("body") + "^" + userInfo.get("conclusion");
-            bodyMap.put("content", content);
-            bodyMap.put("user_input", userInfo.get("user_input"));
-        } else {
-            bodyMap.put("user_input", userInfo.get("user_input"));
-        }
+        String content = userInfo.get("introduction") + "^" + userInfo.get("body") + "^" + userInfo.get("conclusion");
+        bodyMap.put("content", content);
+        bodyMap.put("user_input", userInfo.get("user_input"));
         System.out.println("bodyMap = " + bodyMap);
         return webClient
                 .post()

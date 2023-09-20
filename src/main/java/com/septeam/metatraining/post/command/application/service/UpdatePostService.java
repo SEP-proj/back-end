@@ -37,6 +37,15 @@ public class UpdatePostService {
         post.get().setConclusion(conclusion);
         Post updatePost = postRepository.save(post.get());
     }
+    // 임시저장 통합
+    @Transactional
+    public void updateAll(PostDTO postDTO){
+        Optional<Post> post = postRepository.findById(postDTO.getId());
+        post.get().setIntroduction(postDTO.getIntroduction());
+        post.get().setBody(postDTO.getBody());
+        post.get().setConclusion(postDTO.getConclusion());
+        Post updatePost = postRepository.save(post.get());
+    }
 
     // 마지막 페이지로 넘어갈 때
     @Transactional
@@ -54,7 +63,7 @@ public class UpdatePostService {
         return content;
     }
 
-    // 마지막 페이지에서 요청처리
+    // 마지막 페이지에서 요청처리 (수정및 controller 추가해야함 )
     public void resultPost(PostDTO postDTO){
         Optional<Post> post = postRepository.findById(postDTO.getId());
 

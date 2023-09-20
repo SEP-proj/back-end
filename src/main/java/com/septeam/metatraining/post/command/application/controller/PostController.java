@@ -88,6 +88,16 @@ public class PostController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "임시저장 통합", description = "사용자가 작성한 글을 저장(update)함")
+    @CustomCommonApiResponse
+    @PutMapping("/update")
+    public ResponseEntity<?> updateAll(
+            @Parameter(description = "PostDTO중 서론,본론, 결론 받아서 사용", required = true, example = "") @RequestBody PostDTO postDTO) {
+        System.out.println("PostDTO = " + postDTO);
+        updatePostService.updateAll(postDTO);
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", "saved successfully");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
     @Operation(summary = "글 합치기", description = "사용자가 작성한 사용자가 작성한 서론, 본론, 결론을 합쳐서 저장")
     @CustomCommonApiResponse
@@ -105,6 +115,21 @@ public class PostController {
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @Operation(summary = "글 발행 여부 확인", description = "사용자가 최종적으로 피드백을 마친 글 저장")
+    @CustomCommonApiResponse
+    @PutMapping("/final")
+    public ResponseEntity<?> resultPost(
+            @Parameter(description = "PostDTO의 피드백 후 content, 발행여부 받아서 사용", required = true, example = "")@RequestBody PostDTO postDTO
+    ){
+        System.out.println("postDTO = " + postDTO);
+        updatePostService.resultPost(postDTO);
+        Map<String, String> result = new HashMap<>();
+        result.put("result", "성공");
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully",result );
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
 
     // 임시
     @GetMapping("/recommend/title")
@@ -140,9 +165,7 @@ public class PostController {
     @PostMapping("/chat/help")
     public ResponseEntity<?> chatToChatBot(@RequestBody Map<String, String> userInfo) throws JsonProcessingException {
         Object result = aiApisService.getChatAnswer(userInfo);
-
         System.out.println("result = " + result);
-
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -155,6 +178,4 @@ public class PostController {
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
 }
-
