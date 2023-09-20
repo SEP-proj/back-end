@@ -29,7 +29,7 @@ public class AuthController {
     public ResponseEntity<?> issueToken (@RequestHeader(HttpHeaders.AUTHORIZATION) String bearerToken) {
 
         String accessToken =  bearerToken.substring(7);
-        System.out.println("accessToken = " + accessToken);
+        System.out.println("ACCESS_TOKEN = " + accessToken);
 
         String issuedToken = issueTokenService.issueTokenByAccessToken(accessToken);
 
@@ -51,11 +51,10 @@ public class AuthController {
 
 
     @GetMapping
-    public String test(@AuthenticationPrincipal UserPrincipal userPrincipal){
+    public  @ResponseBody UserPrincipal test(@AuthenticationPrincipal UserPrincipal userPrincipal){
 
         System.out.println("userPrincipal = " + userPrincipal);
-        Long memberId = userPrincipal.getId();
 
-        return "하이";
+        return userPrincipal;
     }
 }

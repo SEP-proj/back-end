@@ -4,6 +4,7 @@ import com.septeam.metatraining.member.command.domain.aggregate.entity.Member;
 import com.septeam.metatraining.member.command.domain.aggregate.entity.enumtype.Role;
 import com.septeam.metatraining.member.query.application.dto.FindMemberDTO;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @Getter
+@ToString
 public class UserPrincipal implements OAuth2User, UserDetails {
 
     private final Long id;
