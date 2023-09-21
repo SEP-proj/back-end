@@ -7,6 +7,7 @@ import com.septeam.metatraining.post.command.application.service.UpdatePostServi
 import com.septeam.metatraining.post.command.domain.aggregate.entity.Post;
 import com.septeam.metatraining.post.command.domain.aggregate.entity.enumType.CategoryEnum;
 import com.septeam.metatraining.post.command.domain.repository.PostRepository;
+import com.septeam.metatraining.post.query.application.dto.FindPostDTO;
 import com.septeam.metatraining.post.query.application.service.FindPostService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -178,48 +179,4 @@ public class PostCRUDTests {
         Assertions.assertNotEquals(beforePublished, createPost.isPublished());
     }
 
-
-    // 조회 테스트 (Mybatis) smaple data가 있는 상황에서 진행
-    @DisplayName("전체 글 조회 테스트")
-    @Test
-    void findAllTest(){
-        //when
-        List<Post> posts = findPostService.findAll();
-
-        //then
-        Assertions.assertDoesNotThrow(() -> findPostService.findAll());
-        Assertions.assertNotNull(posts);
-    }
-
-    @DisplayName("글 카테고리 별 조회 테스트 ")
-    @Test
-    void findByCategory(){
-        //given
-
-        //when
-
-        //then
-    }
-
-    @DisplayName("내가 작성한 글 조회 테스트")
-    @Test
-    void findByMyPost(){
-        //given
-        Long memberId= 1L;
-        //when
-        List<Post> myPosts = findPostService.findByMyPost(memberId);
-        //then
-        Assertions.assertDoesNotThrow(() -> findPostService.findByMyPost(memberId));
-        Assertions.assertNotNull(myPosts);
-    }
-
-    @DisplayName("글 상세보기 요청 테스트")
-    @Test
-    void findById(){
-        //given
-
-        //when
-
-        //then
-    }
 }

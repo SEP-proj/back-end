@@ -5,6 +5,7 @@ import com.septeam.metatraining.common.annotation.CustomCommonApiResponse;
 import com.septeam.metatraining.common.response.ApiResponse;
 import com.septeam.metatraining.post.command.application.dto.PostDTO;
 import com.septeam.metatraining.post.command.domain.aggregate.entity.Post;
+import com.septeam.metatraining.post.query.application.dto.FindPostDTO;
 import com.septeam.metatraining.post.query.application.service.FindPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,8 +31,8 @@ public class FindPostController {
     @CustomCommonApiResponse
     @GetMapping("/all")
     public ResponseEntity<?> findAllPost(){
-        List<Post> posts = findPostService.findAll();
-        ApiResponse<List<Post>> response = new ApiResponse<>(HttpStatus.CHECKPOINT.value(), "saved successfully", posts);
+        List<FindPostDTO> posts = findPostService.findAll();
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CHECKPOINT.value(), "saved successfully", posts);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
@@ -42,7 +43,7 @@ public class FindPostController {
             @Parameter(description = "PostDTO 중 category 받아서 글 조회시 사용",required = true, example = "")@RequestBody PostDTO postDTO
             ){
         System.out.println("postDTO = " + postDTO);
-        List<Post> posts = findPostService.findByCategory(String.valueOf(postDTO.getCategory()));
+        List<FindPostDTO> posts = findPostService.findByCategory(String.valueOf(postDTO.getCategory()));
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", posts);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
@@ -54,7 +55,7 @@ public class FindPostController {
             @Parameter(description = "PostDTO 중 member_id 받아서 글 조회시 사용", required = true, example = "") @RequestBody PostDTO postDTO
     ){
         System.out.println("postDTO = " + postDTO);
-        List<Post> posts = findPostService.findByMyPost(postDTO.getMemberId());
+        List<FindPostDTO> posts = findPostService.findByMyPost(postDTO.getMemberId());
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", posts);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -64,7 +65,7 @@ public class FindPostController {
     @GetMapping("/{postId}")
     public ResponseEntity<?> findById(@PathVariable Long postId){
         System.out.println("postId = " + postId);
-        Post post = findPostService.findById(postId);
+        FindPostDTO post = findPostService.findById(postId);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(),"saved successfully", post);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
