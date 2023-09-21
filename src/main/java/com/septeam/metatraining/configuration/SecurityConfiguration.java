@@ -6,6 +6,7 @@ import com.septeam.metatraining.common.filter.TokenAuthenticationFilter;
 import com.septeam.metatraining.common.handler.CustomAccessDeniedHandler;
 import com.septeam.metatraining.common.handler.OAuth2FailHandler;
 import com.septeam.metatraining.common.handler.OAuth2SuccessHandler;
+import com.septeam.metatraining.member.command.domain.aggregate.entity.enumtype.Role;
 import com.septeam.metatraining.security.command.application.service.CustomOAuth2UserService;
 import com.septeam.metatraining.security.command.application.service.CustomUserDetailService;
 import com.septeam.metatraining.security.command.domain.repository.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -14,17 +15,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 
 
@@ -64,6 +73,7 @@ public class SecurityConfiguration {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         config.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
+
         config.setAllowedHeaders(Arrays.asList("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -79,13 +89,43 @@ public class SecurityConfiguration {
         return new AuthenticationExceptionFilter(resolver);
     }
 
-
-
     TokenAuthenticationFilter tokenAuthenticationFilter(CustomTokenService customTokenService,
                                                         CustomUserDetailService customUserDetailService) {
         return new TokenAuthenticationFilter(customTokenService, customUserDetailService);
     }
 
+    @Bean
+    @Order(0)
+    public SecurityFilterChain exceptionSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors()
+                .and()
+                .csrf().disable()
+                .requestCache().disable()
+                .securityContext().disable()
+                .sessionManagement().disable()
+                .requestMatchers((matchers) ->
+                        matchers
+                                .antMatchers(
+                                        "/", "/error","/favicon.ico", "/**/*.png",
+                                        "/**/*.gif", "/**/*.svg", "/**/*.jpg",
+                                        "/**/*.html", "/**/*.css", "/**/*.js"
+                                )
+                                .antMatchers(
+                                        "/swagger", "/swagger-ui.html", "/swagger-ui/**",
+                                        "/api-docs", "/api-docs/**", "/v3/api-docs/**"
+                                )
+                                .antMatchers(
+                                        "/login/**"
+                                )
+                )
+                .authorizeHttpRequests((authorize) -> authorize.anyRequest().permitAll());
+
+        return http.build();
+    }
+
+
+    @Order(1)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -101,20 +141,18 @@ public class SecurityConfiguration {
                 .formLogin()
                 .disable()
                 .exceptionHandling()
+
                 .authenticationEntryPoint(authEntryPoint)
-                .and()
-
-
+                        .and()
                 .authorizeRequests()
-                .antMatchers("/post", "/").permitAll() //permit request
 
-                .antMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**",
-                        "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll() //permit swagger
+                .antMatchers("/v1/**","/auth/**").hasRole(Role.MEMBER.name()) //permit login
+                .antMatchers("/admin/**").hasRole(Role.ADMIN.name())
 
-                .antMatchers("/login/**","/auth/**").permitAll() //permit login
                 .anyRequest()
                 .authenticated()
                 .and()
+
 
                 .oauth2Login()
                 .authorizationEndpoint()
