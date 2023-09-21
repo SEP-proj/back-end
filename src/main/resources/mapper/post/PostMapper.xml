@@ -2,27 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.septeam.metatraining.post.query.domain.repository.PostMapper">
-<!--    <resultMap id="QueryPostMap" type="com.septeam.metatraining.post.command.domain.aggregate.entity.Post">-->
-<!--        <id column="id" property="id"/>-->
-<!--        <result column="title" property="title"/>-->
-<!--        <result column="category" property="category"/>-->
-<!--        <result column="member_id" property="member_id"/>-->
-<!--        <result column="introduction" property="introduction"/>-->
-<!--        <result column="body" property="body"/>-->
-<!--        <result column="conclusion" property="conclusion"/>-->
-<!--        <result column="content" property="content"/>-->
-<!--        <result column="created_date" property="createdDate"/>-->
-<!--        <result column="published" property="published"/>-->
-<!--    </resultMap>-->
+    <resultMap id="QueryPostMap" type="com.septeam.metatraining.post.query.application.dto.FindPostDTO">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="category" property="category"/>
+        <result column="member_id" property="memberId"/>
+        <result column="introduction" property="introduction"/>
+        <result column="body" property="body"/>
+        <result column="conclusion" property="conclusion"/>
+        <result column="content" property="content"/>
+        <result column="created_date" property="createDate"/>
+        <result column="published" property="published"/>
+    </resultMap>
 
-    <select id="findAll" resultType="com.septeam.metatraining.post.command.domain.aggregate.entity.Post">
+    <select id="findAll" resultMap="QueryPostMap">
         SELECT *
         FROM
             POST_TB
         WHERE PUBLISHED = 1
     </select>
 
-    <select id="findByCategory" resultType="com.septeam.metatraining.post.command.domain.aggregate.entity.Post">
+    <select id="findByCategory" resultMap="QueryPostMap">
         SELECT *
         FROM
             POST_TB
@@ -30,19 +30,19 @@
         AND PUBLISHED = 1
     </select>
 
-    <select id="findById" resultType="com.septeam.metatraining.post.command.domain.aggregate.entity.Post">
+    <select id="findById" resultMap="QueryPostMap">
         SELECT *
         FROM
             POST_TB
         WHERE ID = #{postId}
---           AND PUBLISHED = 1
+          AND PUBLISHED = 1
     </select>
 
-    <select id="findByMyPost" resultType="com.septeam.metatraining.post.command.domain.aggregate.entity.Post">
+    <select id="findByMyPost"  resultMap="QueryPostMap">
         SELECT *
         FROM
             POST_TB
         WHERE MEMBER_ID = #{memberId}
---           AND PUBLISHED = 1
+          AND PUBLISHED = 1
     </select>
 </mapper>

@@ -7,6 +7,7 @@ import com.septeam.metatraining.post.command.application.service.UpdatePostServi
 import com.septeam.metatraining.post.command.domain.aggregate.entity.Post;
 import com.septeam.metatraining.post.command.domain.aggregate.entity.enumType.CategoryEnum;
 import com.septeam.metatraining.post.command.domain.repository.PostRepository;
+import com.septeam.metatraining.post.query.application.dto.FindPostDTO;
 import com.septeam.metatraining.post.query.application.service.FindPostService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -185,7 +186,6 @@ public class PostCRUDTests {
     void findAllTest(){
         //when
         List<Post> posts = findPostService.findAll();
-
         //then
         Assertions.assertDoesNotThrow(() -> findPostService.findAll());
         Assertions.assertNotNull(posts);
@@ -195,10 +195,12 @@ public class PostCRUDTests {
     @Test
     void findByCategory(){
         //given
-
+        String category = "DAILY";
         //when
-
+        List<Post> posts = findPostService.findByCategory(category);
         //then
+        Assertions.assertDoesNotThrow(()-> findPostService.findByCategory(category));
+        Assertions.assertNotNull(posts);
     }
 
     @DisplayName("내가 작성한 글 조회 테스트")
@@ -208,6 +210,7 @@ public class PostCRUDTests {
         Long memberId= 1L;
         //when
         List<Post> myPosts = findPostService.findByMyPost(memberId);
+        System.out.println("myPosts = " + myPosts);
         //then
         Assertions.assertDoesNotThrow(() -> findPostService.findByMyPost(memberId));
         Assertions.assertNotNull(myPosts);
@@ -217,9 +220,11 @@ public class PostCRUDTests {
     @Test
     void findById(){
         //given
-
+        Long postId = 1L;
         //when
-
+        Post post = findPostService.findById(postId);
         //then
+        Assertions.assertDoesNotThrow(()->findPostService.findById(postId));
+        Assertions.assertNotNull(post);
     }
 }

@@ -2,7 +2,9 @@ package com.septeam.metatraining.post.command.domain.aggregate.entity;
 
 import com.septeam.metatraining.post.command.domain.aggregate.entity.enumType.CategoryEnum;
 import com.septeam.metatraining.post.command.domain.aggregate.vo.MemberVO;
+import com.septeam.metatraining.post.query.application.dto.FindPostDTO;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -70,17 +72,6 @@ public class Post {
         this.published = published;
     }
 
-    public Post(Long id, String title, CategoryEnum category, MemberVO memberId, String introduction, String body, String conclusion, String content) {
-        this.id = id;
-        this.title = title;
-        this.category = category;
-        this.memberId = memberId;
-        this.introduction = introduction;
-        this.body = body;
-        this.conclusion = conclusion;
-        this.content = content;
-        this.createdDate = LocalDateTime.now();
-    }
 
     public Post(Long id, String title, CategoryEnum category, MemberVO memberId, String introduction, String body, String conclusion, String content, boolean published) {
         this.id = id;
@@ -95,9 +86,20 @@ public class Post {
         this.published = published;
     }
 
-    public Post() {
-
+    public Post(Long id, String title, CategoryEnum category, MemberVO memberId, String introduction, String body, String conclusion, String content, LocalDateTime createdDate, boolean published) {
+        this.id = id;
+        this.title = title;
+        this.category = category;
+        this.memberId = memberId;
+        this.introduction = introduction;
+        this.body = body;
+        this.conclusion = conclusion;
+        this.content = content;
+        this.createdDate = createdDate;
+        this.published = published;
     }
+
+    public Post() {}
 
     public Long getId() {
         return id;
@@ -115,14 +117,32 @@ public class Post {
         this.conclusion = conclusion;
     }
 
+    public static Post dtoToEntity(FindPostDTO findPostDTO){
+        MemberVO memberId = MemberVO.builder().memeberId(findPostDTO.getMemberId()).build();
+        Post post = new Post(
+                findPostDTO.getId(),
+                findPostDTO.getTitle(),
+                findPostDTO.getCategory(),
+                memberId,
+                findPostDTO.getIntroduction(),
+                findPostDTO.getBody(),
+                findPostDTO.getConclusion(),
+                findPostDTO.getContent(),
+                findPostDTO.getCreateDate(),
+                findPostDTO.isPublished()
+        );
+        return post;
+    }
 
     // test용 toString method
+
     @Override
     public String toString() {
         return "Post{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", category=" + category +
+                ", memberId=" + memberId.getId() +
                 ", introduction='" + introduction + '\'' +
                 ", body='" + body + '\'' +
                 ", conclusion='" + conclusion + '\'' +
