@@ -117,22 +117,6 @@ public class Post {
         this.conclusion = conclusion;
     }
 
-    public static Post dtoToEntity(FindPostDTO findPostDTO){
-        MemberVO memberId = MemberVO.builder().memeberId(findPostDTO.getMemberId()).build();
-        Post post = new Post(
-                findPostDTO.getId(),
-                findPostDTO.getTitle(),
-                findPostDTO.getCategory(),
-                memberId,
-                findPostDTO.getIntroduction(),
-                findPostDTO.getBody(),
-                findPostDTO.getConclusion(),
-                findPostDTO.getContent(),
-                findPostDTO.getCreateDate(),
-                findPostDTO.isPublished()
-        );
-        return post;
-    }
 
     // test용 toString method
 

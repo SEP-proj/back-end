@@ -21,45 +21,23 @@ public class FindPostService {
     // 전부 published가 true인 즉, 발행된 글만
 
     // 글 전체 조회
-    public List<Post> findAll(){
-        List<FindPostDTO> postDTOS = postMapper.findAll();
-
-        List<Post> posts = new ArrayList<>();
-        for (FindPostDTO postDTO: postDTOS ){
-            posts.add(Post.dtoToEntity(postDTO));
-        }
-        return posts;
+    public List<FindPostDTO> findAll(){
+        return postMapper.findAll();
     }
 
     // 카테고리별 조회
-    public List<Post> findByCategory(String category){
-        List<FindPostDTO> postDTOS = postMapper.findByCategory(category);
-
-        List<Post> posts = new ArrayList<>();
-        for (FindPostDTO postDTO: postDTOS ){
-            posts.add(Post.dtoToEntity(postDTO));
-        }
-        return posts;
+    public List<FindPostDTO> findByCategory(String category){
+        return postMapper.findByCategory(category);
     }
 
     // 글 상세보기
-    public Post findById(Long postId){
-        FindPostDTO postDTO= postMapper.findById(postId);
-
-        Post post = Post.dtoToEntity(postDTO);
-
-        return post;
+    public FindPostDTO findById(Long postId){
+        return postMapper.findById(postId);
     }
 
     // 내가 쓴 글 조회
-    public List<Post> findByMyPost(Long memberId){
-        List<FindPostDTO> postDTOS = postMapper.findByMyPost(memberId);
-
-        List<Post> posts = new ArrayList<>();
-        for (FindPostDTO postDTO: postDTOS ){
-            posts.add(Post.dtoToEntity(postDTO));
-        }
-        return posts;
+    public List<FindPostDTO> findByMyPost(Long memberId){
+        return postMapper.findByMyPost(memberId);
     }
 
 
