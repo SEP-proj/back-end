@@ -129,17 +129,16 @@ public class PostController {
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully",result );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
-
-    // 임시
-    @GetMapping("/recommend/title")
-    public ResponseEntity<?> getTitle() {
-        Map<String, String> result = new HashMap<>();
-        result.put("title", "학교폭력은 더이상 방관하면 안된다.");
+    @Operation(summary = "제목 추천", description = "사용자의 요청에 AI가 글쓰기 제목 추천")
+    @CustomCommonApiResponse
+    @PostMapping("/recommend/title")
+    public ResponseEntity<?> getTitle(
+            @Parameter(description = "content을 기반으로 title 추천",required = true, example = "")@RequestBody Map<String, String> content
+    ) {
+        Object result =aiApisService.getTitle(content);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-    // 임시
 
     @Operation(summary = "주제 추천", description = "사용자의 요청에 AI가 글쓰기 주제 추천")
     @CustomCommonApiResponse
