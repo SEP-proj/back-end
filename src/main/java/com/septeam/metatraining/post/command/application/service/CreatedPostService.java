@@ -1,5 +1,6 @@
 package com.septeam.metatraining.post.command.application.service;
 
+import com.septeam.metatraining.common.response.ApiResponse;
 import com.septeam.metatraining.post.command.application.dto.PostDTO;
 import com.septeam.metatraining.post.command.application.dto.TitleDTO;
 import com.septeam.metatraining.post.command.domain.aggregate.entity.Post;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 public class CreatedPostService {
 
     private final PostRepository postRepository;
+
+
+    private  ApiResponse apiResponse;
 
     @Autowired
     public CreatedPostService(PostRepository postRepository) {

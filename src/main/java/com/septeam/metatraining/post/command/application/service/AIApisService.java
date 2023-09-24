@@ -79,12 +79,37 @@ public class AIApisService {
         System.out.println("bodyMap = " + bodyMap);
         return webClient
                 .post()
+                .uri("/modification/make_title")
+                .bodyValue(bodyMap)
+                .retrieve()
+                .toEntity(Object.class)
+                .block();
+    }
+
+    public ResponseEntity<Object> getTitleString(String content){
+        Map<String, String> bodyMap = new HashMap<>();
+        bodyMap.put("content", content);
+        return webClient
+                .post()
+                .uri("/modification/make_title")
+                .bodyValue(bodyMap)
+                .retrieve()
+                .toEntity(Object.class)
+                .block();
+    }
+
+    public ResponseEntity<Object> getFeedBack(Map<String, String> content){
+        Map<String, String> bodyMap = new HashMap<>();
+        bodyMap.put("content", content.get("content"));
+        return webClient
+                .post()
                 .uri("/modification/check_content")
                 .bodyValue(bodyMap)
                 .retrieve()
                 .toEntity(Object.class)
                 .block();
     }
+
 
     //    ===========================================================================================================================================================
     public ResponseEntity<Object> feedback(/*CategoryEnum categoryEnum*/) throws JsonProcessingException {
