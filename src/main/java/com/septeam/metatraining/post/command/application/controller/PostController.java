@@ -105,12 +105,12 @@ public class PostController {
     public ResponseEntity<?> concatWtriting(
             @Parameter(description = "PostDTO의 서론 본론 결론을 받아서 사용", required = true, example = "") @RequestBody PostDTO postDTO) {
         System.out.println("PostDTO = " + postDTO);
+
         String content = updatePostService.resultContent(postDTO);
-        // 임시
-        Map<String, String> result = new HashMap<>();
-        result.put("title", "학교폭력 문제 이대로 괜찮은가?");
+        Object title = aiApisService.getTitleString(content);
+        Map<String, Object> result = new HashMap<>();
+        result.put("title", title);
         result.put("content", content);
-        // 임시
 
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -169,12 +169,25 @@ public class PostController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+
+    // 수정 => 글이 합쳐지지 않은 상태에서 질문을 생성할 수 있게 서론,본론,결론 나눠서 받아야함
     @Operation(summary = "chatbot에게 질문", description = "사용자의 질문에 AI chatbot이 질문에 대한 응답")
     @CustomCommonApiResponse
     @PostMapping("/chat/question")
-    public ResponseEntity<?> questionToChatBot(@RequestBody Map<String, String> question) throws JsonProcessingException {
+    public ResponseEntity<?> questionToChatBot(@RequestBody Map<String, String> question) {
         Object result = aiApisService.getQuestionAnswer(question);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "chatbot에게 feedback 요청",description = "사용자의 요청에 AI가 피드백 응답")
+    @CustomCommonApiResponse
+    @PostMapping("/chat/feedback")
+    public ResponseEntity<?> feedbackToChatBot(
+            @RequestBody Map<String, String> content
+    ){
+        Object result = aiApisService.getFeedBack(content);
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(),"saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }
