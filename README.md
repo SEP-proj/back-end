@@ -65,7 +65,7 @@ Ai가 추천해주는 카테고리 주제로 글을 작성할 수 있습니다.<
     <td align="center"><a href="https://github.com/JeonTaeHyeon" target='_blank'>전태현</a></td>
     <td align="center"><a href="https://github.com/jiwon11" target='_blank'>이정민</a></td>
     <td align="center"><a href="https://github.com/CodeJugller" target='_blank'>진용민</a></td>
-    <td align="center"><a href="" target='_blank'>김나래</a></td>
+    <td align="center"><a href="https://github.com/Blessian" target='_blank'>김나래</a></td>
     <td align="center"><a href="" target='_blank'>이승현</a></td>
     <td align="center"><a href="" target='_blank'>원예찬</a></td>
     <td align="center"><a href="" target='_blank'>김시애나</a></td>
