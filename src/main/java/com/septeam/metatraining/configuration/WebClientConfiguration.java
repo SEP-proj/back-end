@@ -27,7 +27,7 @@ public class WebClientConfiguration {
                                 .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
 
         return   WebClient.builder()
-                .baseUrl("http://192.168.0.55:8000")
+                .baseUrl("http://192.168.0.26:8000")
                 .build();
     }
 }

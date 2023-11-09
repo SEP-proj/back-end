@@ -32,6 +32,7 @@ public class FindPostController {
     @GetMapping("/all")
     public ResponseEntity<?> findAllPost(){
         List<FindPostDTO> posts = findPostService.findAll();
+        System.out.println("posts = " + posts);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CHECKPOINT.value(), "saved successfully", posts);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
@@ -40,10 +41,12 @@ public class FindPostController {
     @CustomCommonApiResponse
     @PostMapping("/category")
     public ResponseEntity<?> findByCategory(
-            @Parameter(description = "PostDTO 중 category 받아서 글 조회시 사용",required = true, example = "")@RequestBody PostDTO postDTO
+            @Parameter(description = "PostDTO 중 category 받아서 글 조회시 사용",required = true, example = "")
+            @RequestBody PostDTO postDTO
             ){
         System.out.println("postDTO = " + postDTO);
         List<FindPostDTO> posts = findPostService.findByCategory(String.valueOf(postDTO.getCategory()));
+        System.out.println("posts = " + posts);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", posts);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
@@ -56,6 +59,7 @@ public class FindPostController {
     ){
         System.out.println("postDTO = " + postDTO);
         List<FindPostDTO> posts = findPostService.findByMyPost(postDTO.getMemberId());
+        System.out.println("posts = " + posts);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", posts);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -66,9 +70,8 @@ public class FindPostController {
     public ResponseEntity<?> findById(@PathVariable Long postId){
         System.out.println("postId = " + postId);
         FindPostDTO post = findPostService.findById(postId);
+        System.out.println("post = " + post);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(),"saved successfully", post);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
-
 }

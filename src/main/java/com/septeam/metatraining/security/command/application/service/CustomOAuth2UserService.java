@@ -59,7 +59,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member newMember = createMemberService.createMember(createMemberDTO);
             oauthMember = UserPrincipal.create(newMember, attributes.getAttributes());
         } else {
-            UpdateMemberDTO updateMemberDTO = new UpdateMemberDTO(attributes.getImageUrl(), attributes.getName());
+            UpdateMemberDTO updateMemberDTO = new UpdateMemberDTO( attributes.getName(),attributes.getImageUrl());
             boolean updateMemberResult = updateMemberService.updateMember(member.getId(), updateMemberDTO);
             oauthMember = UserPrincipal.create(member, attributes.getAttributes());
         }

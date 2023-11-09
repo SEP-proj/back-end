@@ -2,7 +2,9 @@ package com.septeam.metatraining.post.command.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.septeam.metatraining.post.command.application.dto.PostDTO;
 import com.septeam.metatraining.post.command.application.dto.ai.subject.CategoryDTO;
+import com.septeam.metatraining.post.command.domain.aggregate.entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class AIApisService {
     public ResponseEntity<Object> getSubjects(Map<String, String> category) throws JsonProcessingException {
         Map<String, String> bodyMap = new HashMap<>();
         bodyMap.put("category", category.get("category"));
+        System.out.println("bodyMap = " + bodyMap);
         return webClient
                 .post()
                 .uri("/topic_recommand/make_subject")
@@ -36,6 +39,18 @@ public class AIApisService {
     public ResponseEntity<Object> getCategory(Map<String, String> subject) {
         Map<String, String> bodyMap = new HashMap<>();
         bodyMap.put("subject", subject.get("subject"));
+        return webClient
+                .post()
+                .uri("/topic_recommand/make_category")
+                .bodyValue(bodyMap)
+                .retrieve()
+                .toEntity(Object.class)
+                .block();
+    }
+
+    public ResponseEntity<Object> getCategoryString(String subject) {
+        Map<String, String> bodyMap = new HashMap<>();
+        bodyMap.put("subject", subject);
         return webClient
                 .post()
                 .uri("/topic_recommand/make_category")
@@ -61,9 +76,11 @@ public class AIApisService {
                 .block();
     }
 
-    public ResponseEntity<Object> getQuestionAnswer(Map<String, String> question) {
+    public ResponseEntity<Object> getQuestionAnswer(PostDTO postDTO) {
+        String content = postDTO.getIntroduction() + "^" + postDTO.getBody() + "^" + postDTO.getConclusion();
+
         Map<String, String> bodyMap = new HashMap<>();
-        bodyMap.put("content", question.get("content"));
+        bodyMap.put("content", content);
         return webClient
                 .post()
                 .uri("/chatbot/make_question")
@@ -73,8 +90,8 @@ public class AIApisService {
                 .block();
     }
 
-    public ResponseEntity<Object> getTitle(Map<String, String> content){
-        Map<String, String> bodyMap =new HashMap<>();
+    public ResponseEntity<Object> getTitle(Map<String, String> content) {
+        Map<String, String> bodyMap = new HashMap<>();
         bodyMap.put("content", content.get("content"));
         System.out.println("bodyMap = " + bodyMap);
         return webClient
@@ -86,7 +103,7 @@ public class AIApisService {
                 .block();
     }
 
-    public ResponseEntity<Object> getTitleString(String content){
+    public ResponseEntity<Object> getTitleString(String content) {
         Map<String, String> bodyMap = new HashMap<>();
         bodyMap.put("content", content);
         return webClient
@@ -98,9 +115,13 @@ public class AIApisService {
                 .block();
     }
 
-    public ResponseEntity<Object> getFeedBack(Map<String, String> content){
+    public ResponseEntity<Object> getFeedBack(PostDTO postDTO) {
+        System.out.println("postDTO.getContent() = " + postDTO.getContent());
+        String[] content = postDTO.getContent().split("\n");
+        String resultContent = content[0] + "^" + content[1] + "^" + content[2];
         Map<String, String> bodyMap = new HashMap<>();
-        bodyMap.put("content", content.get("content"));
+
+        bodyMap.put("content", resultContent);
         return webClient
                 .post()
                 .uri("/modification/check_content")
@@ -109,50 +130,4 @@ public class AIApisService {
                 .toEntity(Object.class)
                 .block();
     }
-
-
-    //    ===========================================================================================================================================================
-    public ResponseEntity<Object> feedback(/*CategoryEnum categoryEnum*/) throws JsonProcessingException {
-        System.out.println("서비스 통과!");
-        CategoryDTO bodyData = new CategoryDTO("category", "환경");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String bodyJson = objectMapper.writeValueAsString(bodyData);
-
-        Map<String, Object> bodyMap = new HashMap<>();
-//        Map<String, String> objectMap = new HashMap<>();
-//        bodyMap.put("category", objectMap.put("1","환경"));
-        bodyMap.put("content", "비혼주의의 확산^최근 비혼주의라는 말이 많이 나오고 있다. 나는 개인적으로 비혼주의에 대해 찬성한다. 왜냐하면 결혼 여부를 결정하는 것은 주변의 시선이 아닌 나의 선택이기 때문입니다. 예를 들어 학업, 취미 등에 더 집중하게 되어 개인의 삶의 질을 높일 수 있습니다.  그리고 결혼이라는 중대한 이벤트에 대한 경제적 부담이 줄어듭니다.");
-        return webClient
-                .post()
-                .uri("/modification/check_content")
-//                .uri("/topic_recommand/for_server")
-                .bodyValue(bodyMap)
-                .retrieve()
-                .toEntity(Object.class)
-                .block();
-    }
-
-    public ResponseEntity<Object> requestFeedback(/*CategoryEnum categoryEnum*/) throws JsonProcessingException {
-        System.out.println("서비스 통과!");
-        CategoryDTO bodyData = new CategoryDTO("category", "환경");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String bodyJson = objectMapper.writeValueAsString(bodyData);
-
-        Map<String, Object> bodyMap = new HashMap<>();
-//        Map<String, String> objectMap = new HashMap<>();
-//        bodyMap.put("category", objectMap.put("1","환경"));
-        bodyMap.put("content", "비혼주의의 확산^최근 비혼주의라는 말이 많이 나오고 있다. 나는 개인적으로 비혼주의에 대해 찬성한다. 왜냐하면 결혼 여부를 결정하는 것은 주변의 시선이 아닌 나의 선택이기 때문입니다. 예를 들어 학업, 취미 등에 더 집중하게 되어 개인의 삶의 질을 높일 수 있습니다.  그리고 결혼이라는 중대한 이벤트에 대한 경제적 부담이 줄어듭니다.");
-        bodyMap.put("user_input", "더 이상 생각이 안나ㅠㅠㅠㅠㅠ");
-
-        return webClient
-                .post()
-                .uri("/chatbot/chat")
-//                .uri("/topic_recommand/for_server")
-                .bodyValue(bodyMap)
-                .retrieve()
-                .toEntity(Object.class)
-                .block();
-    }
-
-
 }

@@ -3,6 +3,7 @@ package com.septeam.metatraining.post.command.application.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.septeam.metatraining.common.annotation.CustomCommonApiResponse;
 import com.septeam.metatraining.common.response.ApiResponse;
+import com.septeam.metatraining.post.command.application.dto.NoCategoryDTO;
 import com.septeam.metatraining.post.command.application.dto.PostDTO;
 import com.septeam.metatraining.post.command.application.dto.TitleDTO;
 import com.septeam.metatraining.post.command.application.dto.ai.subject.GetSubjectDTO;
@@ -10,6 +11,7 @@ import com.septeam.metatraining.post.command.application.service.AIApisService;
 import com.septeam.metatraining.post.command.application.service.CreatedPostService;
 import com.septeam.metatraining.post.command.application.service.UpdatePostService;
 import com.septeam.metatraining.post.command.domain.aggregate.entity.Post;
+import com.septeam.metatraining.security.Principal.UserPrincipal;
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -41,7 +44,7 @@ public class PostController {
     @Operation(summary = "글쓰기 주제", description = "사용자가 글쓰기 주제를 정하면 글쓰기 주제와 카테고리 사용자 ID를 database에 저장.")
     @CustomCommonApiResponse
     @PostMapping("")
-    public ResponseEntity<?> createTitle(
+    public ResponseEntity<?> createTitle(@AuthenticationPrincipal UserPrincipal userPrincipal,
             @Parameter(description = "TitleDTO", required = true, example = "{\n" +
                     "  \"title\": \"string\",\n" +
                     "  \"category\": \"DAILY\",\n" +
@@ -49,7 +52,31 @@ public class PostController {
                     "}")
             @RequestBody TitleDTO titleDto) {
         System.out.println("titleDto = " + titleDto);
-        Post post = createdPostService.createPost(titleDto);
+        String userName = userPrincipal.getName();
+        System.out.println("userName = " + userName);
+        Post post = createdPostService.createPost(titleDto,userName);
+        System.out.println("post = " + post);
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "created successfully", post);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "글쓰기 주제", description = "사용자가 글쓰기 주제를 정하면 글쓰기 주제와 카테고리 사용자 ID를 database에 저장.")
+    @CustomCommonApiResponse
+    @PostMapping("/test")
+    public ResponseEntity<?> createTitleNoCategory(@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(description = "TitleDTO", required = true, example = "{\n" +
+                    "  \"title\": \"string\",\n" +
+                    "  \"category\": \"DAILY\",\n" +
+                    "  \"memberId\": 0\n" +
+                    "}")
+            @RequestBody NoCategoryDTO noCategoryDTO) {
+        System.out.println("noCategoryDTO = " + noCategoryDTO);
+        Object category = aiApisService.getCategoryString(noCategoryDTO.getTitle());
+        System.out.println("category = " + category);
+        String userName = userPrincipal.getName();
+        System.out.println("userName = " + userName);
+        Post post = createdPostService.createPostNoCategory(category, noCategoryDTO, userName);
+        System.out.println("post = " + post);
         ApiResponse<Post> response = new ApiResponse<>(HttpStatus.CREATED.value(), "created successfully", post);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -94,8 +121,13 @@ public class PostController {
     public ResponseEntity<?> updateAll(
             @Parameter(description = "PostDTO중 서론,본론, 결론 받아서 사용", required = true, example = "") @RequestBody PostDTO postDTO) {
         System.out.println("PostDTO = " + postDTO);
-        updatePostService.updateAll(postDTO);
-        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", "saved successfully");
+        Post updatePost = updatePostService.updateAll(postDTO);
+        String content = postDTO.getIntroduction() + "\n" +
+                postDTO.getBody() + "\n" +
+                postDTO.getConclusion();
+        Map<String, String> result = new HashMap<>();
+        result.put("content",content);
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully",  result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -107,7 +139,9 @@ public class PostController {
         System.out.println("PostDTO = " + postDTO);
 
         String content = updatePostService.resultContent(postDTO);
+        System.out.println("content = " + content);
         Object title = aiApisService.getTitleString(content);
+        System.out.println("title = " + title);
         Map<String, Object> result = new HashMap<>();
         result.put("title", title);
         result.put("content", content);
@@ -120,22 +154,24 @@ public class PostController {
     @CustomCommonApiResponse
     @PutMapping("/final")
     public ResponseEntity<?> resultPost(
-            @Parameter(description = "PostDTO의 피드백 후 content, 발행여부 받아서 사용", required = true, example = "")@RequestBody PostDTO postDTO
-    ){
+            @Parameter(description = "PostDTO의 피드백 후 content, 발행여부 받아서 사용", required = true, example = "") @RequestBody PostDTO postDTO
+    ) {
         System.out.println("postDTO = " + postDTO);
         updatePostService.resultPost(postDTO);
         Map<String, String> result = new HashMap<>();
         result.put("result", "성공");
-        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully",result );
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
     @Operation(summary = "제목 추천", description = "사용자의 요청에 AI가 글쓰기 제목 추천")
     @CustomCommonApiResponse
     @PostMapping("/recommend/title")
     public ResponseEntity<?> getTitle(
-            @Parameter(description = "content을 기반으로 title 추천",required = true, example = "")@RequestBody Map<String, String> content
+            @Parameter(description = "content을 기반으로 title 추천", required = true, example = "") @RequestBody Map<String, String> content
     ) {
-        Object result =aiApisService.getTitle(content);
+        Object result = aiApisService.getTitle(content);
+        System.out.println("result = " + result);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -144,10 +180,13 @@ public class PostController {
     @CustomCommonApiResponse
     @PostMapping("/recommend/subject")
     public ResponseEntity<?> recommendSubject(@RequestBody Map<String, String> category) throws JsonProcessingException {
+        System.out.println("category = " + category);
         Object result = aiApisService.getSubjects(category);
+        System.out.println("result = " + result);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
     @Operation(summary = "카테고리추천", description = "사용자의 요청에 AI가 글 카테고리 추천")
     @CustomCommonApiResponse
     @PostMapping("/recommend/category")
@@ -174,20 +213,23 @@ public class PostController {
     @Operation(summary = "chatbot에게 질문", description = "사용자의 질문에 AI chatbot이 질문에 대한 응답")
     @CustomCommonApiResponse
     @PostMapping("/chat/question")
-    public ResponseEntity<?> questionToChatBot(@RequestBody Map<String, String> question) {
-        Object result = aiApisService.getQuestionAnswer(question);
+    public ResponseEntity<?> questionToChatBot(@RequestBody PostDTO postDTO) {
+        Object result = aiApisService.getQuestionAnswer(postDTO);
         ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "chatbot에게 feedback 요청",description = "사용자의 요청에 AI가 피드백 응답")
+    @Operation(summary = "chatbot에게 feedback 요청", description = "사용자의 요청에 AI가 피드백 응답")
     @CustomCommonApiResponse
     @PostMapping("/chat/feedback")
     public ResponseEntity<?> feedbackToChatBot(
-            @RequestBody Map<String, String> content
+            @RequestBody PostDTO postDTO
     ){
-        Object result = aiApisService.getFeedBack(content);
-        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(),"saved successfully", result);
+        System.out.println("피드백 메소드");
+        System.out.println("postDTO = " + postDTO);
+        Object result = aiApisService.getFeedBack(postDTO);
+        System.out.println("result = " + result);
+        ApiResponse<?> response = new ApiResponse<>(HttpStatus.CREATED.value(), "saved successfully", result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

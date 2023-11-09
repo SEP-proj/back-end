@@ -12,6 +12,7 @@
         <result column="conclusion" property="conclusion"/>
         <result column="content" property="content"/>
         <result column="created_date" property="createDate"/>
+        <result column="subject" property="subject"/>
         <result column="published" property="published"/>
     </resultMap>
 

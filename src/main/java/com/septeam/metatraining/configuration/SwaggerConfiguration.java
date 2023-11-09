@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 
 public class SwaggerConfiguration {
 
+
     @Bean
     public GroupedOpenApi group1(){
         String[] paths = {"/v1/**"};

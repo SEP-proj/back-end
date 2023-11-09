@@ -40,5 +40,4 @@ public class FindPostService {
         return postMapper.findByMyPost(memberId);
     }
 
-
 }

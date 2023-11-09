@@ -17,20 +17,11 @@ public class PostDTO {
     private String introduction;
     private String body;
     private String conclusion;
+    private String subject;
     private String content;
+    private String memberName;
     private boolean published;
 
-    public PostDTO(Long id, String title, CategoryEnum category, Long memberId, String introduction, String body, String conclusion, String content, boolean published) {
-        this.id = id;
-        this.title = title;
-        this.category = category;
-        this.memberId = memberId;
-        this.introduction = introduction;
-        this.body = body;
-        this.conclusion = conclusion;
-        this.content = content;
-        this.published = published;
-    }
 
     // create
     public PostDTO(CategoryEnum category, Long memberId) {
@@ -57,10 +48,17 @@ public class PostDTO {
         this.conclusion = conclusion;
     }
 
-    public PostDTO(Long id, String title, String content, boolean published){
-        this.id=id;
-        this.title=title;
-        this.content=content;
-        this.published=published;
+    public PostDTO(Long id, String title, String content, boolean published) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.published = published;
     }
+
+    public PostDTO(CategoryEnum category, Long memberId, String subject) {
+        this.subject = subject;
+        this.category = category;
+        this.memberId = memberId;
+    }
+
 }

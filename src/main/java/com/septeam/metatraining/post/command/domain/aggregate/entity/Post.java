@@ -28,29 +28,36 @@ public class Post {
     @Embedded
     private MemberVO memberId;
 
-    @Column
+    @Column( columnDefinition = "MEDIUMTEXT")
     private String introduction; // 서론
 
-    @Column
+    @Column( columnDefinition = "MEDIUMTEXT")
     private String body; // 본론
 
-    @Column
+    @Column( columnDefinition = "MEDIUMTEXT")
     private String conclusion; // 결론
 
     @Column(columnDefinition = "MEDIUMTEXT")
     private String content; // 글 전체 내용
+
+    @Column( columnDefinition = "MEDIUMTEXT")
+    private String subject; // 글 주제
 
     @CreatedDate
     @Column(name = "created_date")
     private LocalDateTime createdDate; // 글 생성 날짜
 
     @Column
+    private String memberName;
+
+    @Column
     private boolean published; // 글 공개 여부
 
-    public Post(String title, CategoryEnum category, MemberVO memberId) {
-        this.title = title;
+    public Post(String subject, CategoryEnum category, MemberVO memberId, String memberName) {
+        this.subject = subject;
         this.category = category;
         this.memberId = memberId;
+        this.memberName = memberName;
         this.createdDate = LocalDateTime.now();
 
     }
@@ -59,6 +66,7 @@ public class Post {
         this.category = category;
         this.memberId = memberId;
     }
+
 
     public Post(String title, CategoryEnum category, MemberVO memberId, String introduction, String body, String conclusion, String content, boolean published) {
         this.title = title;
@@ -73,7 +81,7 @@ public class Post {
     }
 
 
-    public Post(Long id, String title, CategoryEnum category, MemberVO memberId, String introduction, String body, String conclusion, String content, boolean published) {
+    public Post(Long id, String title, CategoryEnum category, MemberVO memberId, String introduction, String body, String conclusion, String subject, String content, boolean published) {
         this.id = id;
         this.title = title;
         this.category = category;
@@ -81,8 +89,9 @@ public class Post {
         this.introduction = introduction;
         this.body = body;
         this.conclusion = conclusion;
+        this.subject = subject;
         this.content = content;
-        this.createdDate =  LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
         this.published = published;
     }
 
@@ -99,7 +108,23 @@ public class Post {
         this.published = published;
     }
 
-    public Post() {}
+    public Post(Long id, String title, CategoryEnum category, MemberVO memberId, String introduction, String body, String conclusion, String content, String subject,String memberName, boolean published) {
+        this.id = id;
+        this.title = title;
+        this.category = category;
+        this.memberId = memberId;
+        this.introduction = introduction;
+        this.body = body;
+        this.conclusion = conclusion;
+        this.content = content;
+        this.subject = subject;
+        this.createdDate = LocalDateTime.now();
+        this.memberName = memberName;
+        this.published = published;
+    }
+
+    public Post() {
+    }
 
     public Long getId() {
         return id;
@@ -120,17 +145,19 @@ public class Post {
 
     // test용 toString method
 
+
     @Override
     public String toString() {
         return "Post{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", category=" + category +
-                ", memberId=" + memberId.getId() +
+                ", memberId=" + memberId +
                 ", introduction='" + introduction + '\'' +
                 ", body='" + body + '\'' +
                 ", conclusion='" + conclusion + '\'' +
                 ", content='" + content + '\'' +
+                ", subject='" + subject + '\'' +
                 ", createdDate=" + createdDate +
                 ", published=" + published +
                 '}';

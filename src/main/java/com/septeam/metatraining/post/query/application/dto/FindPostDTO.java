@@ -22,28 +22,31 @@ public class FindPostDTO {
 
     private String conclusion;
 
+    private String subject;
+
     private String content;
 
     private LocalDateTime createDate;
+
+    private String memberName;
 
     private boolean published;
 
     public FindPostDTO() {}
 
 
-    @Override
-    public String toString() {
-        return "FindPostDTO{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", category='" + category + '\'' +
-                ", memberId=" + memberId +
-                ", introduction='" + introduction + '\'' +
-                ", body='" + body + '\'' +
-                ", conclusion='" + conclusion + '\'' +
-                ", content='" + content + '\'' +
-                ", createDate=" + createDate +
-                ", published=" + published +
-                '}';
+    public FindPostDTO(Long id, String title, CategoryEnum category, Long memberId, String introduction, String body, String conclusion, String subject, String content, LocalDateTime createDate, String memberName, boolean published) {
+        this.id = id;
+        this.title = title;
+        this.category = category;
+        this.memberId = memberId;
+        this.introduction = introduction;
+        this.body = body;
+        this.conclusion = conclusion;
+        this.subject = subject;
+        this.content = content;
+        this.createDate = createDate;
+        this.memberName = memberName;
+        this.published = published;
     }
 }
